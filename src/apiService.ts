@@ -7,7 +7,7 @@ export async function fetchDataAndSaveToDatabase() {
   try {
     const providers = await fetchProviders();
     for (const provider of providers) {
-      const { id, api_name: apiName, api_full_path: apiPath, api_http_method: apiHttpMethod } = provider;
+      const { id, source_name: apiName, api_full_path: apiPath, api_http_method: apiHttpMethod } = provider;
 
       // Craft axios request
       const axiosConfig = {
