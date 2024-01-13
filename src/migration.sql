@@ -17,5 +17,12 @@ CREATE TABLE tkb90_monitoring_log (
   id SERIAL PRIMARY KEY,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   provider_id INTEGER REFERENCES tkb90_p2p_provider(id),
-  tkb90_percentage NUMERIC
+  tkb90_percentage NUMERIC DEFAULT NULL,
+  disbursement_total BIGINT DEFAULT NULL,
+  disbursement_ytd BIGINT DEFAULT NULL,
+  loan_outstanding BIGINT DEFAULT NULL,
+  borrower_total INTEGER DEFAULT NULL,
+  borrower_active INTEGER DEFAULT NULL,
+  lender_total INTEGER DEFAULT NULL,
+  lender_active INTEGER DEFAULT NULL
 );

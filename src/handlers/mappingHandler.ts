@@ -1,9 +1,22 @@
 export interface mappingOutput {
   tkb90_percentage: number,
+  disbursement_total?: number,
+  disbursement_ytd?: number,
+  loan_outstanding?: number,
+  borrower_total?: number,
+  borrower_active?: number,
+  lender_total?: number,
+  lender_active?: number,
 }
-
-export function mappingHandler(apiName: string, responseData: any): mappingOutput {
-  switch (apiName.toLowerCase()) {
+/**
+ * Handle the various formats of web or API response from P2P company 
+ * and return a standard output format.
+ * @param companyAlias : identifier of P2P company
+ * @param responseData : Returned response from P2P company API or web 
+ * @returns mappingOutput
+ */
+export function mappingHandler(companyAlias: string, responseData: any): mappingOutput {
+  switch (companyAlias.toLowerCase()) {
     case "pinjammodal":
       const pinjammodalTKB90DataArray = responseData.data.filter((item: any) => item.name === 'tkb_90');
       return { tkb90_percentage: Number(pinjammodalTKB90DataArray[0].value) }

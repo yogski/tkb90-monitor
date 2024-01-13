@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { fetchProviders, saveToMonitoringLog } from './databaseService';
 import { simpleErrorHandler } from './simpleErrorHandler';
-import { mappingHandler } from './mappingHandler';
+import { mappingHandler } from './handlers/mappingHandler';
 
 export async function fetchDataAndSaveToDatabase() {
   try {

@@ -1,7 +1,7 @@
 import { simpleErrorHandler } from './simpleErrorHandler';
 import * as pgPromise from 'pg-promise';
 import * as dotenv from 'dotenv';
-import { mappingOutput } from './mappingHandler';
+import { mappingOutput } from './handlers/mappingHandler';
 
 // Load environment variables from the .env file
 dotenv.config();
