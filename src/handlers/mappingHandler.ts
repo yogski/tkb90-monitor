@@ -19,7 +19,10 @@ export function mappingHandler(companyAlias: string, responseData: any): mapping
   switch (companyAlias.toLowerCase()) {
     case "pinjammodal":
       const pinjammodalTKB90DataArray = responseData.data.filter((item: any) => item.name === 'tkb_90');
-      return { tkb90_percentage: Number(pinjammodalTKB90DataArray[0].value) }
+      return { 
+        tkb90_percentage: Number(pinjammodalTKB90DataArray[0].value),
+        
+      }
     case "indodana":
       const indoDanaTKB90 = responseData.pageProps?.initialState?.loanMetrics?.data?.tkb;
       return { tkb90_percentage: indoDanaTKB90 };
