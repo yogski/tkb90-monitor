@@ -6,8 +6,15 @@ import { mappingHandler } from './handlers/mappingHandler';
 export async function fetchDataAndSaveToDatabase() {
   try {
     const providers = await fetchProviders();
+    console.log("check providers yooo:", providers)
     for (const provider of providers) {
-      const { id, source_name: apiName, api_full_path: apiPath, api_http_method: apiHttpMethod } = provider;
+      
+      const { 
+        id, 
+        source_name: apiName, 
+        api_full_path: apiPath, 
+        api_http_method: apiHttpMethod 
+      } = provider;
 
       // Craft axios request
       const axiosConfig = {
