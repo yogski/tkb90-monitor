@@ -8,3 +8,15 @@ export interface monitoringLogData {
   lender_total?: number,
   lender_active?: number,
 }
+
+export interface P2PSourceData {
+  id: number,
+  source_name: string,
+  description: string,
+  source_type: 'web' | 'api',
+  full_path: string,
+  http_method: 'GET' | 'POST' | 'HEAD' | 'OPTIONS',
+  http_params?: any, 
+  http_header?: any,
+  http_body?: any,
+}

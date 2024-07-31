@@ -4,6 +4,14 @@
     "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "./src",
-    "strict": true
-  }
+    "strict": true,
+    "diagnostics": true,
+    "extendedDiagnostics": true 
+  },
+  "include": [
+    "src/**/*.ts"                           // Specify file glob to include all TypeScript files in the src directory
+  ],
+  "exclude": [
+    "node_modules"                          // Exclude node_modules from compilation
+  ]
 }

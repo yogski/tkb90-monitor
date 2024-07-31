@@ -1,38 +1,22 @@
 import axios from 'axios';
-import { fetchProviders, saveToMonitoringLog } from './databaseService';
+import { fetchP2PSourceList, saveToMonitoringLog } from './databaseService';
 import { simpleErrorHandler } from './simpleErrorHandler';
 import { mappingHandler } from './handlers/mappingHandler';
+import { P2PSourceData } from './types';
 
 export async function fetchDataAndSaveToDatabase() {
   try {
-    const providers = await fetchProviders();
-    console.log("check providers yooo:", providers)
-    for (const provider of providers) {
-      
-      const { 
-        id, 
-        source_name: apiName, 
-        api_full_path: apiPath, 
-        api_http_method: apiHttpMethod 
-      } = provider;
-
-      // Craft axios request
-      const axiosConfig = {
-        method: apiHttpMethod,
-        url: apiPath,
-        // Add other axios configuration options as needed
-      };
-
-      try {
-        const response = await axios(axiosConfig);
-
-        // Process the response data or save it to the database as needed
-        const responseData = response.data;
-        const mappedData = mappingHandler(apiName, responseData)
-        // Example: Save responseData to tkb90_monitoring_log table
-        await saveToMonitoringLog(id, mappedData);
-      } catch (error) {
-        simpleErrorHandler(error);
+    const P2PSource = await fetchP2PSourceList();
+    for (const p2p of P2PSource) {
+      switch (p2p.source_type.toLowerCase()) {
+        case 'api':
+          await processAPISource(p2p)
+          break;
+        case 'web':
+          await processWebSource(p2p);
+          break;
+        default:
+          break;
       }
     }
   } catch (error) {
@@ -40,3 +24,30 @@ export async function fetchDataAndSaveToDatabase() {
   }
 }
 
+async function processAPISource(source: P2PSourceData) {
+  const axiosConfig = {
+    method: source.http_method,
+    url: source.full_path,
+    data: source.http_body || {},
+    // Add other axios configuration options as needed
+  };
+
+  try {
+    const response = await axios(axiosConfig);
+    const responseData = response.data;
+    const mappedData = mappingHandler(source.source_name, responseData)
+    await saveToMonitoringLog(source.id, mappedData);
+  } catch (error) {
+    simpleErrorHandler(error, source.source_name);
+  }
+}
+
+async function processWebSource(source: P2PSourceData) {
+  try {
+    const responseData = {};
+    const mappedData = mappingHandler(source.source_name, responseData)
+    await saveToMonitoringLog(source.id, mappedData);
+  } catch (error) {
+    simpleErrorHandler(error);
+  }
+}
