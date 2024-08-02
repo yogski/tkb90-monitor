@@ -1,4 +1,4 @@
-import { simpleErrorHandler } from './simpleErrorHandler';
+import { simpleErrorHandler } from './handlers/simpleErrorHandler';
 import * as pgPromise from 'pg-promise';
 import * as dotenv from 'dotenv';
 import { monitoringLogData, P2PSourceData } from './types';
@@ -23,8 +23,8 @@ export async function saveToMonitoringLog(providerId: number, responseData: moni
     // Save the data to tkb90_monitoring_log table
     await db.none(
       `INSERT INTO tkb90_monitoring_log 
-      (provider_id, tkb90_percentage, disbursement_total, disbursement_ytd, loan_outstanding, borrower_total, borrower_active, lender_total, lender_active) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
+      (provider_id, tkb90_percentage, disbursement_total, disbursement_ytd, loan_outstanding, borrower_total, borrower_active, lender_total, lender_active, source_timestamp) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`
     , [
       providerId,
       responseData.tkb90_percentage,
@@ -35,6 +35,7 @@ export async function saveToMonitoringLog(providerId: number, responseData: moni
       responseData.borrower_active,
       responseData.lender_total,
       responseData.lender_active,
+      responseData.source_timestamp,
     ]);
   } catch (error) {
     simpleErrorHandler(error);

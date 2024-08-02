@@ -1,5 +1,5 @@
 import * as cron from 'cron';
-import { fetchDataAndSaveToDatabase } from './apiService';
+import { fetchDataAndSaveToDatabase } from './monitorService';
 import moment = require('moment');
 import * as dotenv from 'dotenv';
 

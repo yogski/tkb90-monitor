@@ -7,6 +7,7 @@ export interface monitoringLogData {
   borrower_active?: number,
   lender_total?: number,
   lender_active?: number,
+  source_timestamp?: string | Date,
 }
 
 export interface P2PSourceData {
