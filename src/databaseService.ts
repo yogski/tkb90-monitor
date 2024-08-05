@@ -1,5 +1,5 @@
 import { simpleErrorHandler } from './handlers/simpleErrorHandler';
-import * as pgPromise from 'pg-promise';
+import pgPromise from 'pg-promise';
 import * as dotenv from 'dotenv';
 import { monitoringLogData, P2PSourceData } from './types';
 

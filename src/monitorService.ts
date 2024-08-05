@@ -3,12 +3,14 @@ import { fetchP2PSourceList, saveToMonitoringLog } from './databaseService';
 import { simpleErrorHandler } from './handlers/simpleErrorHandler';
 import { mappingHandler } from './handlers/mappingHandler';
 import { P2PSourceData } from './types';
-import { processUangmeSource } from './handlers/specialServiceHandler';
+import { processEstaKapitalSource, processUangmeSource } from './handlers/specialServiceHandler';
 
 export async function fetchDataAndSaveToDatabase() {
   try {
     const P2PSource = await fetchP2PSourceList();
+    console.log(`Detected ${P2PSource.length} sources...`)
     for (const p2p of P2PSource) {
+      console.log(`Processing ${p2p.source_name} source...`)
       switch (p2p.source_type.toLowerCase()) {
         case 'api':
           await processAPISource(p2p)
@@ -18,6 +20,10 @@ export async function fetchDataAndSaveToDatabase() {
           break;
         case 'api-uangme':
           await processUangmeSource(p2p);
+          break;
+        case 'web-estakapital':
+          await processEstaKapitalSource(p2p);
+          break;
         default:
           break;
       }

@@ -4,6 +4,7 @@
  */
 
 import axios, { AxiosRequestConfig } from "axios";
+import https from 'https';
 import { P2PSourceData } from "../types";
 import { mappingHandler } from "./mappingHandler";
 import { saveToMonitoringLog } from "../databaseService";
@@ -32,9 +33,32 @@ export async function processUangmeSource(source: P2PSourceData) {
     responseData.push(tkbResponse.data);
     const summaryResponse = await axios(summaryConfig);
     responseData.push(summaryResponse.data);
-    const mappedData = mappingHandler(source.source_name, responseData)
+    const mappedData = mappingHandler(source.source_name, responseData);
     await saveToMonitoringLog(source.id, mappedData);
   } catch (error) {
     simpleErrorHandler(error, source.source_name);
+  }
+}
+
+export async function processEstaKapitalSource(source: P2PSourceData) {
+  try {
+    const unsafeAxios = axios.create({
+      httpsAgent: new https.Agent({ rejectUnauthorized: false })
+    });
+    const responseData: any[] = [];
+    const headers = {
+      'Sec-Fetch-Mode':'navigate',
+      'Sec-Fetch-Dest':'document',
+      'Sec-Fetch-Site':'none',
+      'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    }
+    const mainData = await unsafeAxios.get(source.full_path, { headers });
+    responseData.push(mainData.data);
+    const supportData = await unsafeAxios.get(`${source.full_path}/tentang-kami`, { headers });
+    responseData.push(supportData.data);
+    const mappedData = mappingHandler(source.source_name, responseData);
+    await saveToMonitoringLog(source.id, mappedData);
+  } catch (error) {
+    simpleErrorHandler(error);
   }
 }

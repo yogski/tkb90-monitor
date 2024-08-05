@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';import { monitoringLogData } from "../types";
-import { parseMonetaryValue, parsePercentageValue, removeThousandSeparators } from './valueHandler';
+import { parseAbbrValue, parseMonetaryValue, parsePercentageValue, removeThousandSeparators } from './valueHandler';
 import moment = require('moment');
 
 /**
@@ -354,6 +354,81 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
           lender_active: Number(responseData[1]?.data['current_lender_count']),
         }  
       }
+    case "rupiahcepat": // Last updated 5 August 2024
+      {
+        /**
+         * Typical rupiahcepat API response
+         * {
+            "audit_info": {
+                "TKB90": "100%",
+                "total_account": "9.0 T",
+                "year_account": "4.1 T",
+                "total_overdue_amount": "74.8 M",
+                "total_loan_account": "5.4 jt",
+                "active_loan_account": "4.4 jt",
+                "TKB0": "86.06%",
+                "TKB30": "93.59%",
+                "TKB60": "98.47%",
+                "TKB_switch": true
+            },
+            "audit_month_info": {
+                "TKB90": "100%",
+                "total_amount": "25.9 T",
+                "year_amount": "3227.4 M",
+                "total_outstanding_amount": "1053.1 M",
+                "total_loan_account": "5.6 jt",
+                "total_borrower_account": "966.1 ribu"
+            },
+            "server_time": 1722833952044,
+            "statistic_info": "TKB90=100%"
+          }
+         */
+        
+        const rupiahcepatResult = {
+          tkb90_percentage: parsePercentageValue(responseData.audit_info['TKB90']),
+          disbursement_total:parseAbbrValue(responseData.audit_month_info['total_amount'], 'ID'),
+          disbursement_ytd: parseAbbrValue(responseData.audit_month_info['year_amount'], 'ID'),
+          loan_outstanding: parseAbbrValue(responseData.audit_month_info['total_outstanding_amount'], 'ID'),
+          borrower_total: parseAbbrValue(responseData.audit_month_info['total_borrower_account'], 'ID'),
+          // borrower_active: -
+          // lender_total: -
+          // lender_active: -
+          source_timestamp: responseData.server_time ? moment(responseData.server_time).toDate() : undefined,
+        }
+        return rupiahcepatResult;
+      }
+    case "estakapital": // Last updated 5 August 2024
+      // Esta Kapital has web and customized flow
+      try {
+        const html0 = responseData[0] as string;
+        const $1 = cheerio.load(html0);
+        const estaTKB90 = $1('body > div.container.counting > div > div:nth-child(3) > h1').text();
+        const estaDisbursementTotal = $1('body > div.container.counting > div > div:nth-child(2) > h1').text();
+
+        const html1 = responseData[1] as string;
+        const $2 = cheerio.load(html1);
+        const estaDisbursementYTD = $2('body > div.container > div > div:nth-child(1) > div:nth-child(1) > h3 > span').text();
+        const estaLoanOutstanding = $2('body > div.container > div > div:nth-child(4) > div:nth-child(1) > h3 > span').text();
+        const estaTotalBorrower = $2('body > div.container > div > div:nth-child(1) > div:nth-child(2) > h3 > span').text();
+        const estaActiveBorrower = $2('body > div.container > div > div:nth-child(1) > div:nth-child(3) > h3 > span').text();
+        const estaTotalLender = $2('body > div.container > div > div:nth-child(4) > div:nth-child(2) > h3 > span').text();
+        const estaActiveLender = $2('body > div.container > div > div:nth-child(4) > div:nth-child(3) > h3 > span').text();
+        const estaResult = {
+          tkb90_percentage: parsePercentageValue(estaTKB90),
+          disbursement_total: parseAbbrValue(estaDisbursementTotal, 'ID'),
+          disbursement_ytd: parseAbbrValue(estaDisbursementYTD, 'ID'),
+          loan_outstanding: parseAbbrValue(estaLoanOutstanding, 'ID'),
+          borrower_total: (Number(estaTotalBorrower)),
+          borrower_active: (Number(estaActiveBorrower)),
+          lender_total: (Number(estaTotalLender)),
+          lender_active: (Number(estaActiveLender)),
+          source_timestamp: moment().toDate(),
+        }
+        return estaResult;
+      } catch (error) {
+        console.log(`[FAILED_MAPPING][${companyAlias}]${error}`)
+        return {} as monitoringLogData
+      }      
     case "indodana":
       const indoDanaTKB90 = responseData.pageProps?.initialState?.loanMetrics?.data?.tkb;
       return { tkb90_percentage: indoDanaTKB90 };
