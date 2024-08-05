@@ -4,7 +4,7 @@
   "description": "Monitoring Tools on TKB90 index of P2P Lending companies in Indonesia.",
   "main": "./src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --config test/runner/mocharc.js",
     "dev": "ts-node ./src/index.ts",
     "build": "tsc",
     "start": "node ./dist/index.js"
@@ -23,7 +23,11 @@
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.17",
     "@types/cheerio": "^0.22.35",
+    "@types/mocha": "^10.0.7",
+    "chai": "^4.5.0",
+    "mocha": "^10.7.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   }

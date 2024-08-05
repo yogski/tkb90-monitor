@@ -308,7 +308,7 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
         console.log(`[FAILED_MAPPING][${companyAlias}]${error}`)
         return {} as monitoringLogData
       }
-    case "uangme": 
+    case "uangme": // Last updated 4 August 2024
       {
       /**
        * API response [0]
