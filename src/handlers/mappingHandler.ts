@@ -11,6 +11,108 @@ import moment = require('moment');
  */
 export function mappingHandler(companyAlias: string, responseData: any): monitoringLogData {
   switch (companyAlias.toLowerCase()) {
+    case "akseleran": // Last updated 6 August 2024
+      {
+        /**
+         * Typical Akseleran API response
+         * {
+            "tkb0": 98.68,
+            "tkb30": 99.45,
+            "tkb60": 99.72,
+            "tkb90": 99.82,
+            "tkb_total": 99.99,
+            "total_disbursement": 11108128102017,
+            "total_disbursement_current_year": 1746831562065,
+            "total_outstanding_loan": 652279679415,
+            "total_borrower": 10466,
+            "total_active_borrower": 6354,
+            "total_active_borrower_current_year": 2917,
+            "total_lenders": 225725,
+            "total_active_lenders": 46802,
+            "total_active_lenders_current_year": 6656,
+            "current_year": 2024,
+            "total_cost": {
+                "lowest_lending": {
+                    "lending_cost_received": 9732030,
+                    "lending_cost_returned": 11016268,
+                    "total_fee": 1284238,
+                    "percentage_total_fee_perday": 0.055
+                },
+                "highest_lending": {
+                    "lending_cost_received": 1981200000,
+                    "lending_cost_returned": 2125333333,
+                    "total_fee": 144133333,
+                    "percentage_total_fee_perday": 0.081
+                }
+            }
+          }
+         */
+        const akseleranResult = {
+          tkb90_percentage: Number(responseData['tkb90']),
+          disbursement_total: Number(responseData['total_disbursement']),
+          disbursement_ytd: Number(responseData['total_disbursement_current_year']),
+          loan_outstanding: Number(responseData['total_outstanding_loan']),
+          borrower_total: Number(responseData['total_borrower']),
+          borrower_active: Number(responseData['total_active_borrower']),
+          lender_total: Number(responseData['total_lenders']),
+          lender_active: Number(responseData['total_active_lenders']),
+          // source_timestamp: -,
+        }
+        return akseleranResult;
+
+      }
+    case "pinjamango":      
+      {
+        /**
+         * Typical Pinjaman Go TKB Response [0]
+         * {
+            "status": "1",
+            "error": "00000000",
+            "msg": null,
+            "data": {
+                "remark0": "TKB0 adalah ukuran tingkat keberhasilan ... sampai dengan 0 (nol) hari kalender\nterhitung sejak jatuh tempo",
+                "remark30": " TKB30 adalah ukuran tingkat keberhasilan ... sampai dengan 30 (tiga puluh) hari\nkalender terhitung sejak jatuh tempo",
+                "remark60": "TKB60 adalah ukuran tingkat keberhasilan ... sampai dengan 60 (enam puluh) hari\nkalender terhitung sejak jatuh tempo",
+                "remark90": " TKB90 adalah ukuran tingkat keberhasilan ... sampai dengan 90 (sembilan puluh)\nhari kalender terhitung sejak jatuh tempo",
+                "tkb0": "99.40%",
+                "tkb30": "98.50%",
+                "tkb60": "97.54%",
+                "tkb90": "95.18%"
+            }
+          }
+        */
+        
+        /**
+         * Typical Pinjaman GO Info [1]
+         * {
+            "status": "1",
+            "error": "00000000",
+            "msg": null,
+            "data": {
+                "outstandingPinjaman": "13996512",
+                "totalLenderAktif": "13",
+                "totalPeminjamAktif": "4315",
+                "totalPeminjamSejakBerdiri": "297079",
+                "totalPinjamanSepanjangTahunBerjalan": "33975300000",
+                "totalPinjamanSejakBerdiri": "3201252028233"
+            }
+          }
+        */
+
+        const pinjamangoResult = {
+          tkb90_percentage: parsePercentageValue(responseData[0]?.data['tkb90']),
+          disbursement_total: Number(responseData[1]?.data['totalPinjamanSejakBerdiri']),
+          disbursement_ytd: Number(responseData[1]?.data['totalPinjamanSepanjangTahunBerjalan']),
+          loan_outstanding: Number(responseData[1]?.data['outstandingPinjaman']),
+          borrower_total: Number(responseData[1]?.data['totalPeminjamSejakBerdiri']),
+          borrower_active: Number(responseData[1]?.data['totalPeminjamAktif']),
+          lender_total: Number(responseData[1]?.data['totalLenderAktif']),
+          lender_active: Number(responseData[1]?.data['totalLenderAktif']),
+          // source_timestamp: -,
+        }
+        return pinjamangoResult;
+
+      }
     case "pinjammodal": // Last updated 28 July 2024
       /**
        * Typical pinjammodal API response
@@ -407,15 +509,26 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
 
         const html1 = responseData[1] as string;
         const $2 = cheerio.load(html1);
-        const estaDisbursementYTD = $2('body > div.container > div > div:nth-child(1) > div:nth-child(1) > h3 > span').text();
-        const estaLoanOutstanding = $2('body > div.container > div > div:nth-child(4) > div:nth-child(1) > h3 > span').text();
-        const estaTotalBorrower = $2('body > div.container > div > div:nth-child(1) > div:nth-child(2) > h3 > span').text();
-        const estaActiveBorrower = $2('body > div.container > div > div:nth-child(1) > div:nth-child(3) > h3 > span').text();
-        const estaTotalLender = $2('body > div.container > div > div:nth-child(4) > div:nth-child(2) > h3 > span').text();
-        const estaActiveLender = $2('body > div.container > div > div:nth-child(4) > div:nth-child(3) > h3 > span').text();
+        const estaDisbursementYTDElement = $2('body > div.container > div > div:nth-child(1) > div:nth-child(1) > h3 > span');
+        const estaLoanOutstandingElement = $2('body > div.container > div > div:nth-child(4) > div:nth-child(1) > h3 > span');
+        const estaTotalBorrowerElement = $2('body > div.container > div > div:nth-child(1) > div:nth-child(2) > h3 > span');
+        const estaActiveBorrowerElement = $2('body > div.container > div > div:nth-child(1) > div:nth-child(3) > h3 > span');
+        const estaTotalLenderElement = $2('body > div.container > div > div:nth-child(4) > div:nth-child(2) > h3 > span');
+        const estaActiveLenderElement = $2('body > div.container > div > div:nth-child(4) > div:nth-child(3) > h3 > span');
+        
+        const estaDisbursementYTD = `${estaDisbursementYTDElement.attr('data-val')}${estaDisbursementYTDElement.attr('data-prefix')}`
+        const estaLoanOutstanding = `${estaLoanOutstandingElement.attr('data-val')}${estaLoanOutstandingElement.attr('data-prefix')}`
+        const estaTotalBorrower = `${estaTotalBorrowerElement.attr('data-val')}`
+        const estaActiveBorrower = `${estaActiveBorrowerElement.attr('data-val')}`
+        const estaTotalLender = `${estaTotalLenderElement.attr('data-val')}`
+        const estaActiveLender = `${estaActiveLenderElement.attr('data-val')}`
+        
+        // custom mapping due to source behavior
+        const adjustedEstaDisbursementTotal = parseAbbrValue(estaDisbursementTotal, 'ID') <= Number(estaDisbursementTotal) ? Number(estaDisbursementTotal) * 1_000_000_000 : parseAbbrValue(estaDisbursementTotal, 'ID')
+        
         const estaResult = {
           tkb90_percentage: parsePercentageValue(estaTKB90),
-          disbursement_total: parseAbbrValue(estaDisbursementTotal, 'ID'),
+          disbursement_total: adjustedEstaDisbursementTotal,
           disbursement_ytd: parseAbbrValue(estaDisbursementYTD, 'ID'),
           loan_outstanding: parseAbbrValue(estaLoanOutstanding, 'ID'),
           borrower_total: (Number(estaTotalBorrower)),
@@ -428,13 +541,82 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
       } catch (error) {
         console.log(`[FAILED_MAPPING][${companyAlias}]${error}`)
         return {} as monitoringLogData
-      }      
+      }
+    case "ammana": // Last updated 6 August 2024
+      {
+        /**
+         * Typical Ammana API Response
+         * {
+            "data": {
+                "disbursed_campaign": {
+                    "this_year": 909270689161,
+                    "last_year": 46970,
+                    "only_last_year": 0,
+                    "only_this_year": 115000000000
+                },
+                "total_customer": 255379,
+                "tkb90": "97.05%",
+                "npl90": "2.95%",
+                "total_investor": 10397
+            },
+            "meta": {
+                "hostname": "p2p-api-5bb49d5854-l9th5"
+            }
+          }
+         */
+
+        const ammanaResult = {
+          tkb90_percentage: parsePercentageValue(responseData.data['tkb90']),
+          disbursement_total:Number(responseData.data['disbursed_campaign']['this_year']),
+          disbursement_ytd: Number(responseData.data['disbursed_campaign']['only_this_year']),
+          // loan_outstanding: parseAbbrValue(responseData.data['total_outstanding_amount'], 'ID'),
+          borrower_total: Number(responseData.data['total_customer']),
+          // borrower_active: -
+          lender_total: Number(responseData.data['total_investor']),
+          // lender_active: -,
+          // source_timestamp: -,
+        }
+        return ammanaResult;
+      }  
     case "indodana":
       const indoDanaTKB90 = responseData.pageProps?.initialState?.loanMetrics?.data?.tkb;
       return { tkb90_percentage: indoDanaTKB90 };
     case "maucash":
       const maucashTKB90 =  "TKB 90 | 90,50%";
       console.log(responseData.split('|').pop().trim().replace('%',''));
+    case "danamas": // Last updated 6 August 2024
+      try {
+        const html = responseData as string;
+        const $ = cheerio.load(html);
+        const danamasTKB90Element = $('#js_example').text().trim();
+        const danamasHTML = $('.each-info--desc');
+        const danamasDisbursementTotal = danamasHTML.filter((i, el) => $(el).text().includes('Pinjaman Terealisasi') && !$(el).text().trim().includes('Jumlah Pinjaman Terealisasi')).find('span').first().text(); // expected sample: Rp. 44,460,086,506
+        const danamasDisbursementYTD = danamasHTML.filter((i, el) => $(el).text().includes('Pinjaman Tahun Berjalan')).find('span').first().text(); // expected sample: Rp. 44,460,086,506
+        const danamasLoanOutstanding = danamasHTML.filter((i, el) => $(el).text().includes('Jumlah Outstanding Pinjaman')).find('span').first().text(); // expected sample: Rp. 44,460,086,506
+        const danamasTotalBorrower = danamasHTML.filter((i, el) => $(el).text().includes('Jumlah Peminjam')).find('span').first().text(); // expected sample: 2,026,984
+        const danamasActiveBorrower = danamasHTML.filter((i, el) => $(el).text().includes('Jumlah Peminjam Aktif')).find('span').first().text(); // expected sample: 1,578,419
+        const danamasTotalLender = danamasHTML.filter((i, el) => $(el).text().includes('Pemodal Terdaftar')).find('span').first().text(); // expected sample: 595,137
+        
+        // additional data adjustment
+        const tkb90Match = danamasTKB90Element.match(/TKB90:\s*([\d.]+%)/);
+        if (!tkb90Match) return {} as monitoringLogData;
+        const tkb90Data = parsePercentageValue(tkb90Match[1]);
+
+        return {
+          tkb90_percentage: tkb90Data,
+          disbursement_total: Math.floor(parseMonetaryValue(danamasDisbursementTotal)),
+          disbursement_ytd: Math.floor(parseMonetaryValue(danamasDisbursementYTD)),
+          loan_outstanding: Math.floor(parseMonetaryValue(danamasLoanOutstanding)),
+          borrower_total: Math.floor(removeThousandSeparators(danamasTotalBorrower)),
+          borrower_active: Math.floor(removeThousandSeparators(danamasActiveBorrower)),
+          lender_total: Math.floor(removeThousandSeparators(danamasTotalLender)),
+          // lender_active: -,
+          source_timestamp: moment().toDate(),
+        }
+      } catch (error) {
+        console.log(`[FAILED_MAPPING][${companyAlias}]${error}`)
+        return {} as monitoringLogData
+      }
     default:
       return {} as monitoringLogData;
   }

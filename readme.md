@@ -27,7 +27,11 @@ Document reference: [OJK Data 12 July 2024](https://ojk.go.id/id/kanal/iknb/fina
 | 7  | 2024-08-02  | [Tokomodal](https://tokomodal.co.id)       | ✅      | ✅       |
 | 8  | 2024-08-01  | [Modalku](https://modalku.co.id)       | ✅      | ✅       |
 | 9  | 2024-08-05  | [Rupiah Cepat](https://rupiahcepat.co.id)       | ✅      | ✅       |
-| 10  | 2024-08-05  | [Esta Kapital](https://estakapital.co.id)       | ✅      | ❌ (Issue in website certificate)       |
+| 10  | 2024-08-05  | [Esta Kapital](https://estakapital.co.id)       | ✅      | ✅       |
+| 11  | 2024-08-06  | [Ammana](https://ammana.id)       | ✅      | ✅       |
+| 12  | 2024-08-06  | [Akseleran](https://akseleran.co.id)       | ✅      | ✅       |
+| 13  | 2024-08-06  | [Pinjaman Go](https://pinjamango.co.id)       | ✅      | ✅       |
+| 14  | 2024-08-06  | [Danamas](https://danamas.co.id)       | ✅      | ✅       |
 
 ## Prerequisites
 - Node version `16` or later

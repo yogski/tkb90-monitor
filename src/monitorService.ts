@@ -3,7 +3,8 @@ import { fetchP2PSourceList, saveToMonitoringLog } from './databaseService';
 import { simpleErrorHandler } from './handlers/simpleErrorHandler';
 import { mappingHandler } from './handlers/mappingHandler';
 import { P2PSourceData } from './types';
-import { processEstaKapitalSource, processUangmeSource } from './handlers/specialServiceHandler';
+import { processEstaKapitalSource, processPinjamanGoSource, processUangmeSource } from './handlers/specialServiceHandler';
+import { measureExecutionTime } from './handlers/measureHandler';
 
 export async function fetchDataAndSaveToDatabase() {
   try {
@@ -11,23 +12,28 @@ export async function fetchDataAndSaveToDatabase() {
     console.log(`Detected ${P2PSource.length} sources...`)
     for (const p2p of P2PSource) {
       console.log(`Processing ${p2p.source_name} source...`)
+      const label = `${p2p.source_type} ${p2p.source_name}`;
       switch (p2p.source_type.toLowerCase()) {
         case 'api':
-          await processAPISource(p2p)
+          await measureExecutionTime(() => processAPISource(p2p), label);
           break;
         case 'web':
-          await processWebSource(p2p);
+          await measureExecutionTime(() => processWebSource(p2p), label);
           break;
         case 'api-uangme':
-          await processUangmeSource(p2p);
+          await measureExecutionTime(() => processUangmeSource(p2p), label);
           break;
+        case 'api-pinjamango':
+          await measureExecutionTime(() => processPinjamanGoSource(p2p), label);
+          break;  
         case 'web-estakapital':
-          await processEstaKapitalSource(p2p);
+          await measureExecutionTime(() => processEstaKapitalSource(p2p), label);
           break;
         default:
           break;
       }
     }
+    console.log(`Done.`)
   } catch (error) {
     simpleErrorHandler(error)
   }

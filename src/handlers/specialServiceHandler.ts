@@ -62,3 +62,17 @@ export async function processEstaKapitalSource(source: P2PSourceData) {
     simpleErrorHandler(error);
   }
 }
+
+export async function processPinjamanGoSource(source: P2PSourceData) {
+  try {
+    const responseData: any[] = [];
+    const tkbData = await axios.get(`${source.full_path}/show/TKB90`);
+    responseData.push(tkbData.data);
+    const generalData = await axios.post(`${source.full_path}/message/generalInfo`);
+    responseData.push(generalData.data);
+    const mappedData = mappingHandler(source.source_name, responseData);
+    await saveToMonitoringLog(source.id, mappedData);
+  } catch (error) {
+    simpleErrorHandler(error);
+  }
+}
