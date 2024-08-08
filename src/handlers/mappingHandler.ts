@@ -410,6 +410,111 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
         console.log(`[FAILED_MAPPING][${companyAlias}]${error}`)
         return {} as monitoringLogData
       }
+    case "kreditpintar": // Last updated 8 August 2024
+      // kreditpintar utilizes web
+      try {
+        const html = responseData as string;
+        const $ = cheerio.load(html);
+        const kreditpintarTKB90 = $('div.swiper-slide[data-swiper-slide-index="3"] > div.subtitle').text();
+        const kreditpintarDisbursementTotal = $('#__next > [class^="rate__BannerBox"] > div.container > div > div:nth-child(1) > div.item-rate > div.rate').text();
+        const kreditpintarDisbursementYTD = $('#__next > [class^="rate__BannerBox"] > div.container > div > div:nth-child(2) > div.item-rate > div.rate').text();
+        const kreditpintarLoanOutstanding = $('#__next > [class^="rate__BannerBox"] > div.container > div > div:nth-child(3) > div.item-rate > div.rate').text();
+        const kreditpintarTotalBorrower = $('#__next > [class^="rate__BannerBox"] > div.container > div > div:nth-child(4) > div.item-rate > div.rate').text();
+        const kreditpintarActiveBorrower = $('#__next > [class^="rate__BannerBox"] > div.container > div > div:nth-child(5) > div.item-rate > div.rate').text();
+        const kreditpintarSourceTimestamp = $('.last-updated').text().split(' ').pop();
+       
+        // adjust data
+        const KREDIT_PINTAR_BASELINE = 100
+
+        return {
+          tkb90_percentage: kreditpintarTKB90.trim().length <= 0 ? KREDIT_PINTAR_BASELINE : parsePercentageValue(kreditpintarTKB90),
+          disbursement_total: Math.floor(parseAbbrValue(kreditpintarDisbursementTotal, 'ID')),
+          disbursement_ytd: Math.floor(parseAbbrValue(kreditpintarDisbursementYTD, 'ID')),
+          loan_outstanding: Math.floor(parseAbbrValue(kreditpintarLoanOutstanding, 'ID')),
+          borrower_total: Math.floor(parseAbbrValue(kreditpintarTotalBorrower, 'ID')),
+          borrower_active: Math.floor(parseAbbrValue(kreditpintarActiveBorrower, 'ID')),
+          // lender_total: -,
+          // lender_active: -,
+          source_timestamp: moment(kreditpintarSourceTimestamp, 'DD/MM/YYYY', false).toDate(),
+        }
+      } catch (error) {
+        console.log(`[FAILED_MAPPING][${companyAlias}]${error}`)
+        return {} as monitoringLogData
+      }
+    case "awantunai": // Last updated 8 August 2024
+      {
+        /**
+         * Typical Awantunai API response
+         * {
+            "data": {
+                "rows": [
+                    [
+                        "TKB0",
+                        "99.09%"
+                    ],
+                    [
+                        "TKB30",
+                        "99.45%"
+                    ],
+                    [
+                        "TKB60",
+                        "99.55%"
+                    ],
+                    [
+                        "TKB90",
+                        "99.78%"
+                    ]
+                ],
+                "cols": [
+                    {
+                        "display_name": "TKB",
+                        "source": "native",
+                        "field_ref": [
+                            "field",
+                            "TKB",
+                            {
+                                "base-type": "type/Text"
+                            }
+                        ],
+                        "name": "TKB",
+                        "base_type": "type/Text",
+                        "effective_type": "type/Text"
+                    },
+                    {
+                        "display_name": "RESULT",
+                        "source": "native",
+                        "field_ref": [
+                            "field",
+                            "RESULT",
+                            {
+                                "base-type": "type/Text"
+                            }
+                        ],
+                        "name": "RESULT",
+                        "base_type": "type/Text",
+                        "effective_type": "type/Text"
+                    }
+                ],
+                "insights": null,
+                "requested_timezone": "UTC",
+                "results_timezone": "UTC"
+            },
+            "json_query": {},
+            "status": "completed"
+          }
+         */
+
+        return {
+          tkb90_percentage: parsePercentageValue(responseData.data?.rows?.filter((tkb: any[]) => tkb[0] === "TKB90")[0][1]),
+          // disbursement_total: -,
+          // disbursement_ytd: -,
+          // loan_outstanding: -,
+          // borrower_total: -,
+          // borrower_active: -,
+          // lender_total: -,
+          // lender_active: -,
+        }  
+      }
     case "uangme": // Last updated 4 August 2024
       {
       /**
@@ -454,6 +559,58 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
           borrower_active: Number(responseData[1]?.data['current_borrower_count']),
           lender_total: Number(responseData[1]?.data['lender_count']),
           lender_active: Number(responseData[1]?.data['current_lender_count']),
+        }  
+      }
+    case "adakami": // Last updated 8 August 2024
+      {
+      /**
+       * API response [0]
+       * {
+            "result": 0,
+            "resultMessage": "Berhasil",
+            "content": {
+                "tkb60": "TKB60:99.9602%",
+                "tkb": "TKB90:99.9604%",
+                "tkb0": "TKB0:99.8896%",
+                "tkb30": "TKB30:99.9605%"
+            }
+        }
+       */
+
+      /**
+       * API response [1]
+       * {
+            "result": 0,
+            "resultMessage": "Berhasil",
+            "content": {
+                "lowestRepaymentAmount": "130000",
+                "outstandingLoanPrincipalTotal": "2860209343838",
+                "lowestDailyInterestRate": "0.001290322580645161",
+                "disburseAmountThisYear": "8962250199880",
+                "lowestReceivedAmount": "125000",
+                "borrowerCountInDebt": "2518109",
+                "disburseAmountTotal": "41049297484476",
+                "highestFeeTotal": "62616626",
+                "highestRepaymentAmount": "139554784",
+                "lowestFeeTotal": "5000",
+                "borrowerCountTotal": "4497692",
+                "highestReceivedAmount": "76938158",
+                "highestDailyInterestRate": "0.002506410102970092"
+            }
+        }
+       */
+        // data adjustment 
+        const ADAKAMI_DEFAULT_LENDER = 10 // information based on list of bank displayed on website
+
+        return {
+          tkb90_percentage: parsePercentageValue(responseData[0]?.content['tkb'].split(':')[1]),
+          disbursement_total: Number(responseData[1]?.content['disburseAmountTotal']),
+          disbursement_ytd: Number(responseData[1]?.content['disburseAmountThisYear']),
+          loan_outstanding: Number(responseData[1]?.content['outstandingLoanPrincipalTotal']),
+          borrower_total: Number(responseData[1]?.content['borrowerCountTotal']),
+          borrower_active: Number(responseData[1]?.content['borrowerCountInDebt']),
+          // lender_total: -,
+          lender_active: ADAKAMI_DEFAULT_LENDER,
         }  
       }
     case "rupiahcepat": // Last updated 5 August 2024

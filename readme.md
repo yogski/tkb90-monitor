@@ -32,6 +32,9 @@ Document reference: [OJK Data 12 July 2024](https://ojk.go.id/id/kanal/iknb/fina
 | 12  | 2024-08-06  | [Akseleran](https://akseleran.co.id)       | ✅      | ✅       |
 | 13  | 2024-08-06  | [Pinjaman Go](https://pinjamango.co.id)       | ✅      | ✅       |
 | 14  | 2024-08-06  | [Danamas](https://danamas.co.id)       | ✅      | ✅       |
+| 15  | 2024-08-08  | [Kredit Pintar](https://kreditpintar.com)       | ✅      | ✅       |
+| 16  | 2024-08-08  | [Awan Tunai](https://awantunai.co.id)       | ✅      | ✅       |
+| 17  | 2024-08-08  | [Adakami](https://adakami.id)       | ✅      | ✅       |
 
 ## Prerequisites
 - Node version `16` or later

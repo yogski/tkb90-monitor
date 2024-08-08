@@ -42,6 +42,14 @@ describe('parseAbbrValue', () => {
     expect(parseAbbrValue('515.65 M', 'ID')).to.equal(515650000000);
   });
 
+  it('should parse "515,65 M" as 515650000000 in ID locale', () => {
+    expect(parseAbbrValue('515,65 M', 'ID')).to.equal(515650000000);
+  });
+
+  it('should parse "515,65M" as 515650000000 in ID locale', () => {
+    expect(parseAbbrValue('515,65M', 'ID')).to.equal(515650000000);
+  });
+
   it('should return NaN for "10pi" in EN locale', () => {
     expect(parseAbbrValue('10pi', 'EN')).to.be.NaN;
   });

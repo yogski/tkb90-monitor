@@ -78,7 +78,8 @@ export const removeThousandSeparators = (value: string): number => {
  * @returns numeric value as number
  */
 export const parseAbbrValue = (value: string, locale: Locale = 'EN'): number => {
-  const match = value.match(/^(\d+\.?\d*)\s*([a-zA-Z]+)?$/);
+  let fixedValue = value.replace(/,/g, '.');
+  let match = fixedValue.match(/^(\d+\.?\d*)\s*([a-zA-Z]+)?$/);
 
   if (!match)return NaN;
 

@@ -3,7 +3,7 @@ import { fetchP2PSourceList, saveToMonitoringLog } from './databaseService';
 import { simpleErrorHandler } from './handlers/simpleErrorHandler';
 import { mappingHandler } from './handlers/mappingHandler';
 import { P2PSourceData } from './types';
-import { processEstaKapitalSource, processPinjamanGoSource, processUangmeSource } from './handlers/specialServiceHandler';
+import { processAdakamiSource, processEstaKapitalSource, processPinjamanGoSource, processUangmeSource } from './handlers/specialServiceHandler';
 import { measureExecutionTime } from './handlers/measureHandler';
 
 export async function fetchDataAndSaveToDatabase() {
@@ -23,6 +23,9 @@ export async function fetchDataAndSaveToDatabase() {
         case 'api-uangme':
           await measureExecutionTime(() => processUangmeSource(p2p), label);
           break;
+        case 'api-adakami':
+          await measureExecutionTime(() => processAdakamiSource(p2p), label);
+          break;  
         case 'api-pinjamango':
           await measureExecutionTime(() => processPinjamanGoSource(p2p), label);
           break;  
