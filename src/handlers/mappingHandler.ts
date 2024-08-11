@@ -154,6 +154,55 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
         lender_total: Number(pinjammodalReducedData['total_lender_institution']) + Number(pinjammodalReducedData['total_lender_individual']),
         lender_active: Number(pinjammodalReducedData['total_active_lender_individual']) + Number(pinjammodalReducedData['total_active_lender_institution'])
       }
+    case "pinjamwinwin": // Last updated 11 August 2024
+      {
+        /**
+         * Typical API Respose
+         * {
+            "code": 0,
+            "message": "",
+            "data": [
+              {
+                "statistic_type": "historical",
+                "total_lender": 139,
+                "total_borrower": 7464,
+                "total_borrower_active": 0,
+                "total_loan_amount": 31582764023600,
+                "annual_loan_amount": 0,
+                "total_outstanding_amount": 0,
+                "tkb0": 0,
+                "tkb30": 0,
+                "tkb60": 0,
+                "tkb90": 0
+              },
+              {
+                "statistic_type": "current",
+                "total_lender": 1,
+                "total_borrower": 349405,
+                "total_borrower_active": 197005,
+                "total_loan_amount": 126090024000000,
+                "annual_loan_amount": 122808731000000,
+                "total_outstanding_amount": 43600475400700,
+                "tkb0": 84.34,
+                "tkb30": 91.93,
+                "tkb60": 97.21,
+                "tkb90": 100
+              }
+            ]
+          }
+         */
+        const pwMainData = responseData.data.filter((item:any) => item.statistic_type === 'current');
+        return { 
+          tkb90_percentage: Number(pwMainData[0]['tkb90']),
+          disbursement_total: Number(pwMainData[0]['total_loan_amount']),
+          disbursement_ytd: Number(pwMainData[0]['annual_loan_amount']),
+          loan_outstanding: Number(pwMainData[0]['total_outstanding_amount']),
+          borrower_total: Number(pwMainData[0]['total_borrower']),
+          borrower_active: Number(pwMainData[0]['total_borrower_active']),
+          lender_total: Number(pwMainData[0]['total_lender']),
+          // lender_active: -,
+        }
+      }
     case "dompetkilat": // Last updated 30 July 2024
       /**
        * Typical Dompetkilat API Response
