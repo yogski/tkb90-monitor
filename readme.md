@@ -101,7 +101,7 @@ Document reference: [OJK Data 12 July 2024](https://ojk.go.id/id/kanal/iknb/fina
 | 44  | 2024-08-08  | [Cashcepat](https://cashcepat.id)       | ✅      | ❌      |
 | 45  | 2024-08-08  | [KlikUMKM](https://klikUMKM.co.id)       | ✅      | ❌      |
 | 46  | 2024-08-08  | [Pinjam Gampang](https://kreditplusteknologi.id)       | ✅      | ❌      |
-| 47  | 2024-08-08  | [Cicil](https://cicil.co.id)       | ✅      | ❌      |
+| 47  | 2024-08-08  | [Cicil](https://cicil.co.id)       | ✅      | ✅      |
 | 48  | 2024-08-08  | [Lumbungdana](https://lumbungdana.co.id)       | ✅      | ❌      |
 | 49  | 2024-08-08  | [360 Kredi](https://360kredi.id.id)       | ✅      | ❌      |
 | 50  | 2024-08-08  | [Kredinesia](https://www.kredinesia.id.id)       | ✅      | ❌      |

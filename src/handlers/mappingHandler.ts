@@ -61,7 +61,7 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
         return akseleranResult;
 
       }
-    case "pinjamango":      
+    case "pinjamango": // Last updated 7 August 2024
       {
         /**
          * Typical Pinjaman Go TKB Response [0]
@@ -337,7 +337,7 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
         console.log(`[FAILED_MAPPING][${companyAlias}]${error}`)
         return {} as monitoringLogData
       }
-    case "klika2c": 
+    case "klika2c": // Last updated 12 August 2024
       {
         /**
          * Typical KlikA2C TKB Response [0]
@@ -396,6 +396,86 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
           // source_timestamp: -,
         }
         return klika2cResult;
+      }
+    case "cicil": // Last updated 12 August 2024
+      {
+        
+        /**
+         * Typical cicil API response
+         * {
+            "message": "",
+            "statistic": [
+                {
+                    "icon": "link/2536948","desc": "TKB90","key": "tkb90_value","type": "count","value": "99.76%","unit": ""
+                },
+                {
+                    "icon": "link/2536951","desc": "Total Akumulasi Pinjaman","key": "statistic_total_amount","type": "rupiah","value": "647","unit": "M"
+                },
+                {
+                    "icon": "link/2572775","desc": "Total Akumulasi Pinjaman 2024","key": "statistic_total_current","type": "rupiah","value": "84","unit": "M"
+                },
+                {
+                    "icon": "link/2572774","desc": "Total Outstanding Pinjaman","key": "statistic_total_outstanding","type": "rupiah","value": "145","unit": "M"
+                },
+                {
+                    "icon": "link/2536959","desc": "Jumlah Akumulasi Pinjaman","key": "statistic_borrower_count","type": "count","value": "119.477","unit": ""
+                },
+                {
+                    "icon": "link/2536964","desc": "Jumlah Penerima Dana Aktif","key": "statistic_active_borrower_count","type": "count","value": "110","unit": ""
+                },
+                {
+                    "icon": "link/3190594","desc": "Jumlah Akumulasi Penerima Dana","key": "statistic_unique_borrower","type": "count","value": "61.959","unit": ""
+                },
+                {
+                    "icon": "link/2536968","desc": "Jumlah Ambassador","key": "statistic_ambassador_count","type": "count","value": "6.399","unit": ""
+                },
+                {
+                    "icon": "link/2536969","desc": "Jumlah Kampus","key": "statistic_university_count","type": "count","value": "337","unit": ""
+                },
+                {
+                    "icon": "link/2572773","desc": "Jumlah Kota","key": "statistic_city_count","type": "count","value": "61","unit": ""
+                },
+                {
+                    "icon": "link/3077269","desc": "Pengguna Merasa Puas Menggunakan CICIL","key": "statistic_csat_count","type": "count","value": "91%","unit": ""
+                },
+                {
+                    "icon": "link/3077273","desc": "Jumlah Merchant dan Partnership","key": "statistic_merchant_and_partner_count","type": "count","value": "91","unit": ""
+                },
+                {
+                    "icon": "link/2536964","desc": "Jumlah Penerima Dana pada tahun 2024","key": "statistic_borrower_count_current_year","type": "count","value": "110","unit": ""
+                },
+                {
+                    "icon": "link/2536968","desc": "Jumlah Akumulasi Pemberi Dana","key": "statistic_lender_count_total","type": "count","value": "209","unit": ""
+                },
+                {
+                    "icon": "link/2536968","desc": "Jumlah Pemberi Dana di Tahun 2024","key": "statistic_lender_count_current_year","type": "count","value": "130","unit": ""
+                }
+              ],
+            "status": "success"
+            }
+        */
+
+        if (!responseData.statistic || responseData.statistic.length === 0) return {} as monitoringLogData;
+        const cicilReducedData = responseData.statistic.reduce((acc: any, item: any) => {
+          if (item.unit && item.unit.length > 0) {
+            acc[item.key] = `${item.value}${item.unit}`;
+          } else {
+            acc[item.key] = item.value;
+          }
+          return acc;
+        }, {});
+    
+        return {
+          tkb90_percentage: parsePercentageValue(cicilReducedData['tkb90_value']),
+          disbursement_total: parseAbbrValue(cicilReducedData['statistic_total_amount'],'ID'),
+          disbursement_ytd: parseAbbrValue(cicilReducedData['statistic_total_current'], 'ID'),
+          loan_outstanding: parseAbbrValue(cicilReducedData['statistic_total_outstanding'], 'ID'),
+          borrower_total: removeThousandSeparators(cicilReducedData['statistic_unique_borrower']),
+          borrower_active: removeThousandSeparators(cicilReducedData['statistic_active_borrower_count']),
+          lender_total: removeThousandSeparators(cicilReducedData['statistic_lender_count_total']),
+          lender_active: removeThousandSeparators(cicilReducedData['statistic_lender_count_current_year']),
+          // source_timestamp: -,
+        }
       }
     case "tokomodal": // Last updated 2 August 2024
       {
