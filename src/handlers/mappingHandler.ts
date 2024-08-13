@@ -337,6 +337,66 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
         console.log(`[FAILED_MAPPING][${companyAlias}]${error}`)
         return {} as monitoringLogData
       }
+    case "klika2c": 
+      {
+        /**
+         * Typical KlikA2C TKB Response [0]
+         * {
+            "tkb": {
+              "tkb90": {
+                "rate": "86,67",
+                "days": 90
+              },
+              "tkb60": {
+                "rate": "86,57",
+                "days": 60
+              },
+              "tkb30": {
+                "rate": "82,73",
+                "days": 30
+              },
+              "tkb0": {
+                "rate": "78,72",
+                "days": 0
+              }
+            }
+          }
+        */
+        
+        /**
+         * Typical KlikA2C Info [1]
+         * {
+            "loan_amount": 184970868521,
+            "loan_amount_total": 1323368675260,
+            "loan_outstanding_amount": 62438829868,
+            "borrower_personal_count": 44,
+            "borrower_institution_count": 36,
+            "borrower_total_count": 3619,
+            "borrower_personal_active_count": 6,
+            "borrower_institution_active_count": 12,
+            "borrower_active_total_count": 860,
+            "phone": "62815..., 62815..., 62815..., 62815...",
+            "whatsApp": "62811...",
+            "email": "email",
+            "address": "address",
+            "companyDeedAddress": "address"
+          }
+        */
+
+        const klika2cResult = {
+          tkb90_percentage: parseMonetaryValue(responseData[0]?.tkb?.tkb90?.rate),
+          disbursement_total: Number(responseData[1]?.loan_amount_total),
+          disbursement_ytd: Number(responseData[1]?.loan_amount),
+          loan_outstanding: Number(responseData[1]?.loan_outstanding_amount),
+          // borrower total and borrower account doesn't match, 
+          borrower_total: (Number(responseData[1]?.borrower_personal_count) + Number(responseData[1]?.borrower_institution_count)) || Number(responseData[1]?.borrower_total_count),
+          borrower_active: (Number(responseData[1]?.borrower_personal_active_count) + Number(responseData[1]?.borrower_institution_active_count)) || Number(responseData[1]?.borrower_active_total_count),
+          // lender_total: -,
+          // lender_active: -,
+          // source_timestamp: -,
+        }
+        return klika2cResult;
+      }
     case "tokomodal": // Last updated 2 August 2024
       {
         /**

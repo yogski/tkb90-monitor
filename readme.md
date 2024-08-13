@@ -76,7 +76,7 @@ Document reference: [OJK Data 12 July 2024](https://ojk.go.id/id/kanal/iknb/fina
 | 19  | 2024-08-08  | [Amartha](https://amartha.com)       | ✅      | ❌      |
 | 20  | 2024-08-08  | [Maucash](https://maucash.id)       | ✅      | ❌      |
 | 21  | 2024-08-08  | [Finmas](https://finmas.co.id)       | ✅      | ❌      |
-| 22  | 2024-08-08  | [KlikA2C](https://klika2c.co.id)       | ✅      | ❌      |
+| 22  | 2024-08-08  | [KlikA2C](https://klika2c.co.id)       | ✅      | ✅      |
 | 23  | 2024-08-08  | [Koin P2P](https://koinp2p.com)       | ✅      | ❌      |
 | 24  | 2024-08-08  | [Mekar](https://mekar.id)       | ✅      | ❌      |
 | 25  | 2024-08-08  | [Pohon Dana](https://pohondana.id)       | ✅      | ❌      |
@@ -95,3 +95,13 @@ Document reference: [OJK Data 12 July 2024](https://ojk.go.id/id/kanal/iknb/fina
 | 38  | 2024-08-08  | [Finplus](https://finplus.co.id)       | ✅      | ❌      |
 | 39  | 2024-08-08  | [PinjamDuit](https://pinjamduit.co.id)       | ✅      | ❌      |
 | 40  | 2024-08-08  | [EasyCash](https://easycash.id)       | ✅      | ❌      |
+| 41  | 2024-08-08  | [DanaMerdeka](https://danamerdeka.co.id)       | ✅      | ❌      |
+| 42  | 2024-08-08  | [Dana Syariah](https://danasyariah.id)       | ✅      | ❌      |
+| 43  | 2024-08-08  | [Batumbu](https://batumbu.id)       | ✅      | ❌      |
+| 44  | 2024-08-08  | [Cashcepat](https://cashcepat.id)       | ✅      | ❌      |
+| 45  | 2024-08-08  | [KlikUMKM](https://klikUMKM.co.id)       | ✅      | ❌      |
+| 46  | 2024-08-08  | [Pinjam Gampang](https://kreditplusteknologi.id)       | ✅      | ❌      |
+| 47  | 2024-08-08  | [Cicil](https://cicil.co.id)       | ✅      | ❌      |
+| 48  | 2024-08-08  | [Lumbungdana](https://lumbungdana.co.id)       | ✅      | ❌      |
+| 49  | 2024-08-08  | [360 Kredi](https://360kredi.id.id)       | ✅      | ❌      |
+| 50  | 2024-08-08  | [Kredinesia](https://www.kredinesia.id.id)       | ✅      | ❌      |

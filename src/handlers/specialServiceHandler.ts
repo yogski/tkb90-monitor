@@ -70,6 +70,36 @@ export async function processAdakamiSource(source: P2PSourceData) {
   }
 }
 
+export async function processA2CSource(source: P2PSourceData) {
+  const tkbConfig: AxiosRequestConfig = {
+    method: source.http_method,
+    url: `${source.full_path}/v2/tkb`,
+    data: source.http_method === 'GET' ? null : source.http_body || {},
+    headers: source.http_header ? source.http_header : null,
+    // Add other axios configuration options as needed
+  };
+
+  const summaryConfig: AxiosRequestConfig = {
+    method: source.http_method,
+    url: `${source.full_path}/home-info`,
+    data: source.http_method === 'GET' ? null : source.http_body || {},
+    headers: source.http_header ? source.http_header : null,
+    // Add other axios configuration options as needed
+  };
+
+  try {
+    const responseData: any = [];
+    const tkbResponse = await axios(tkbConfig);
+    responseData.push(tkbResponse.data);
+    const summaryResponse = await axios(summaryConfig);
+    responseData.push(summaryResponse.data);
+    const mappedData = mappingHandler(source.source_name, responseData);
+    await saveToMonitoringLog(source.id, mappedData);
+  } catch (error) {
+    simpleErrorHandler(error, source.source_name);
+  }
+}
+
 export async function processEstaKapitalSource(source: P2PSourceData) {
   try {
     const unsafeAxios = axios.create({
