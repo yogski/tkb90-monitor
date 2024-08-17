@@ -96,7 +96,7 @@ Document reference: [OJK Data 12 July 2024](https://ojk.go.id/id/kanal/iknb/fina
 | 39  | 2024-08-08  | [PinjamDuit](https://pinjamduit.co.id)       | ✅      | ❌      |
 | 40  | 2024-08-08  | [EasyCash](https://easycash.id)       | ✅      | ❌      |
 | 41  | 2024-08-08  | [DanaMerdeka](https://danamerdeka.co.id)       | ✅      | ❌      |
-| 42  | 2024-08-08  | [Dana Syariah](https://danasyariah.id)       | ✅      | ❌      |
+| 42  | 2024-08-08  | [Dana Syariah](https://danasyariah.id)       | ✅      | ✅      |
 | 43  | 2024-08-08  | [Batumbu](https://batumbu.id)       | ✅      | ❌      |
 | 44  | 2024-08-08  | [Cashcepat](https://cashcepat.id)       | ✅      | ❌      |
 | 45  | 2024-08-08  | [KlikUMKM](https://klikUMKM.co.id)       | ✅      | ❌      |

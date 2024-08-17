@@ -599,6 +599,35 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
         console.log(`[FAILED_MAPPING][${companyAlias}]${error}`)
         return {} as monitoringLogData
       }
+    case "danasyariah": // Last updated 17 August 2024
+      // danasyariah uses web
+      {
+        try {
+          const html = responseData as string;
+          const $ = cheerio.load(html);
+          const danasyariahTKB90 = $('#tkb_list > li:nth-child(1) > b').text(); // expected example: 99.85% 
+          const danasyariahDisbursementTotal = $('[data-lazy="https://www.danasyariah.id/img/pendanaanSelesai.png"]').parent().children('h4').text().trim().replace(/Rp./g, '').trim(); // expected sample: 3,57 T 
+          const danasyariahDisbursementYTD = $('[data-lazy="https://www.danasyariah.id/img/pendanaanAktif.png"]').parent().children('h4').text().trim().replace(/Rp./g, '').trim(); // expected sample: 622,00 M 
+          const danasyariahTotalBorrower = $('[data-lazy="https://www.danasyariah.id/img/borrowerAll.png"]').parent().children('h4').text(); // expected sample: 44923
+          const danasyariahActiveBorrower = $('[data-lazy="https://www.danasyariah.id/img/borrowerAktiff.png"]').parent().children('h4').text().trim().split(' ')[0]; // expected sample: 449
+          const danasyariahTotalLender = $('[data-lazy="https://www.danasyariah.id/img/agenMitra.png"]').parent().children('h4').text(); // expected sample: 12348
+          
+          return {
+            tkb90_percentage: parsePercentageValue(danasyariahTKB90),
+            disbursement_total: Math.floor(parseAbbrValue(danasyariahDisbursementTotal, 'ID')),
+            disbursement_ytd: Math.floor(parseAbbrValue(danasyariahDisbursementYTD, 'ID')),
+            // loan_outstanding: -,
+            borrower_total: Math.floor(Number(danasyariahTotalBorrower)),
+            borrower_active: Math.floor(Number(danasyariahActiveBorrower)),
+            lender_total: Math.floor(Number(danasyariahTotalLender)),
+            // lender_active: -,
+            // source_timestamp: -,
+          }
+        } catch (error) {
+          console.log(`[FAILED_MAPPING][${companyAlias}]${error}`)
+          return {} as monitoringLogData
+        }  
+      }
     case "kreditpintar": // Last updated 8 August 2024
       // kreditpintar utilizes web
       try {
