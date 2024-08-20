@@ -93,7 +93,7 @@ Document reference: [OJK Data 12 July 2024](https://ojk.go.id/id/kanal/iknb/fina
 | 36  | 2024-08-08  | [Singa](https://singa.id)       | ✅      | ❌      |
 | 37  | 2024-08-08  | [Pinjam yuk](https://pinjamyuk.co.id)       | ✅      | ❌      |
 | 38  | 2024-08-08  | [Finplus](https://finplus.co.id)       | ✅      | ❌      |
-| 39  | 2024-08-08  | [PinjamDuit](https://pinjamduit.co.id)       | ✅      | ❌      |
+| 39  | 2024-08-08  | [PinjamDuit](https://pinjamduit.co.id)       | ✅      | ✅      |
 | 40  | 2024-08-08  | [EasyCash](https://easycash.id)       | ✅      | ❌      |
 | 41  | 2024-08-08  | [DanaMerdeka](https://danamerdeka.co.id)       | ✅      | ❌      |
 | 42  | 2024-08-08  | [Dana Syariah](https://danasyariah.id)       | ✅      | ✅      |

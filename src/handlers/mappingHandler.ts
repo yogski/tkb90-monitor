@@ -831,48 +831,86 @@ export function mappingHandler(companyAlias: string, responseData: any): monitor
           lender_active: ADAKAMI_DEFAULT_LENDER,
         }  
       }
-    case "rupiahcepat": // Last updated 5 August 2024
+    case "rupiahcepat": // Last updated 20 August 2024
       {
         /**
          * Typical rupiahcepat API response
          * {
-            "audit_info": {
-                "TKB90": "100%",
-                "total_account": "9.0 T",
-                "year_account": "4.1 T",
-                "total_overdue_amount": "74.8 M",
-                "total_loan_account": "5.4 jt",
-                "active_loan_account": "4.4 jt",
-                "TKB0": "86.06%",
-                "TKB30": "93.59%",
-                "TKB60": "98.47%",
-                "TKB_switch": true
-            },
-            "audit_month_info": {
-                "TKB90": "100%",
-                "total_amount": "25.9 T",
-                "year_amount": "3227.4 M",
-                "total_outstanding_amount": "1053.1 M",
-                "total_loan_account": "5.6 jt",
-                "total_borrower_account": "966.1 ribu"
-            },
-            "server_time": 1722833952044,
-            "statistic_info": "TKB90=100%"
+              "audit_info": {
+                  "TKB90": "99.20%",
+                  "TKB0": "85.10%",
+                  "TKB30": "92.40%",
+                  "TKB60": "97.51%",
+                  "TKB_switch": true
+              },
+              "audit_week_info": {
+                  "DayDate": 20240810,
+                  "total_amount": "26.1 T",
+                  "year_amount": "3390.5 M",
+                  "onloan_amount": "1025.5 M",
+                  "total_account": "5.7 jt",
+                  "year_account": "1386.6 ribu",
+                  "onloan_account": "910.1 ribu",
+                  "total_lender": "1917",
+                  "year_lender": "161",
+                  "onloan_lender": "118"
+              },
+              "server_time": 1724131770602,
+              "statistic_info": "TKB90=99.20%"
           }
          */
         
         const rupiahcepatResult = {
-          tkb90_percentage: parsePercentageValue(responseData.audit_info['TKB90']),
-          disbursement_total:parseAbbrValue(responseData.audit_month_info['total_amount'], 'ID'),
-          disbursement_ytd: parseAbbrValue(responseData.audit_month_info['year_amount'], 'ID'),
-          loan_outstanding: parseAbbrValue(responseData.audit_month_info['total_outstanding_amount'], 'ID'),
-          borrower_total: parseAbbrValue(responseData.audit_month_info['total_borrower_account'], 'ID'),
-          // borrower_active: -
-          // lender_total: -
-          // lender_active: -
+          tkb90_percentage: parsePercentageValue(responseData.audit_info?.TKB90),
+          disbursement_total:parseAbbrValue(responseData.audit_month_info?.total_amount || responseData.audit_week_info?.total_amount, 'ID'),
+          disbursement_ytd: parseAbbrValue(responseData.audit_month_info?.year_amount || responseData.audit_week_info?.total_amount, 'ID'),
+          loan_outstanding: parseAbbrValue(responseData.audit_month_info?.total_outstanding_amount || responseData.audit_week_info?.onloan_amount, 'ID'),
+          borrower_total: parseAbbrValue(responseData.audit_month_info?.total_borrower_account || responseData.audit_week_info?.total_account, 'ID'),
+          borrower_active: parseAbbrValue(responseData.audit_week_info?.onloan_account, 'ID'),
+          lender_total: parseAbbrValue(responseData.audit_week_info?.total_lender, 'ID'),
+          lender_active: parseAbbrValue(responseData.audit_week_info?.onloan_lender, 'ID'),
           source_timestamp: responseData.server_time ? moment(responseData.server_time).toDate() : undefined,
         }
         return rupiahcepatResult;
+      }
+    case "pinjamduit": // Last updated 20 August 2024
+      {
+        /**
+         * Typical pinjamduit API response
+         * {
+              "code": "0",
+              "msg": "",
+              "data": {
+                  "borrowerPerson": "2091482",
+                  "activeBorrowerCompany": "0",
+                  "toRepayAmount": "2119631096648",
+                  "loanAmountTotal": "10732078963141",
+                  "borrowerCompany": "0",
+                  "loanAmountThisYear": "3282792000000",
+                  "badDebtRatio": "97.21",
+                  "tkb60": "87.46",
+                  "tkb0": "56.31",
+                  "calculateDate": "2024-08-20",
+                  "activeBorrowerPerson": "346629",
+                  "tkb90": "97.21",
+                  "activeBorrowerPersonThisYear": "346590",
+                  "tkb30": "75.96"
+              }
+          }
+         */
+        
+        const pinjamduitResult = {
+          tkb90_percentage: Number(responseData.data?.tkb90),
+          disbursement_total: Number(responseData.data?.loanAmountTotal),
+          disbursement_ytd: Number(responseData.data?.loanAmountThisYear),
+          loan_outstanding: Number(responseData.data?.toRepayAmount),
+          borrower_total: Number(responseData.data?.borrowerPerson),
+          borrower_active: Number(responseData.data?.activeBorrowerPerson),
+          // lender_total: -,
+          // lender_active: -,
+          source_timestamp: moment(responseData.data?.calculateDate, 'YYYY-MM-DD').toDate(),
+        }
+        return pinjamduitResult;
       }
     case "estakapital": // Last updated 5 August 2024
       // Esta Kapital has web and customized flow
